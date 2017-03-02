@@ -10,13 +10,10 @@ import os, sys, csv
 
 if __name__ == "__main__":
 
-    input_path = 'E:/deep-neurons/raw/'
-    label_file = 'E:/deep-neurons/raw/labels.csv'
+    input_path = 'E:/deep-neurons/'
+    label_file = 'E:/deep-neurons/labels.txt'
 
     f = h5py.File('E:/deep-neurons/deep-neurons.hdf5', 'w')
-
-    images = f.create_dataset('images', shape=(128,128), dtype='float32')
-    labels = f.create_dataset('labels', shape=(3,1),     dtype='bool')
 
     numNeurons = 0
 
@@ -24,10 +21,15 @@ if __name__ == "__main__":
 
     for root, dirs, files in os.walk(input_path, topdown=False):
         for name in files:
-            print(name)
-            filename = os.path.join(root, name)
-            filenames.append(filename)
-            numNeurons += 1
+            if '.tif' in name:
+                print(name)
+                filename = os.path.join(root, name)
+                filenames.append(filename)
+                numNeurons += 1
+
+    print(numNeurons, 'neurons')
+    images = f.create_dataset('images', shape=(numNeurons, 128,128), dtype='float32')
+    labels = f.create_dataset('labels', shape=(numNeurons, 3,1),     dtype='bool')
 
     label_list = []
     with open(label_file, 'r') as f:
@@ -35,13 +37,14 @@ if __name__ == "__main__":
         label_tuples = list(reader)
 
     for i, filename in enumerate(filenames):
-        images[i] = plt.imread(filename)
+        images[i,...] = plt.imread(filename)
 
         for label_tuple in label_tuples:
-            if label_tuple[0] in filename:
-                if label_tuple == 0:
-                    labels[i] = [1, 0, 0]
-                if label_tuple == 1:
-                    labels[i] = [0, 1, 0]
-                if label_tuple == 2:
-                    labels[i] = [0, 0, 1]
+            if (label_tuple[0]+ '.tif') in filename:
+                if 'pyr' in label_tuple[1]:
+                    labels[i, ...] = [1, 0, 0]
+                if 'not' in label_tuple[1]:
+                    labels[i,...] = [0, 1, 0]
+                if 'unk' in label_tuple[1]:
+                    labels[i,...] = [0, 0, 1]
+    f.close()
