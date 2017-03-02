@@ -51,9 +51,15 @@ if __name__ == "__main__":
                   optimizer=sgd,
                   metrics=["accuracy"])
 
-    x_train = np.reshape(np.asarray(images)[train_index], (len(images[train_index]), 128*128))
-    y_train = labels[train_index]
+    x_training = np.asarray(images)[train_index]
 
-    model.fit(x_train, y_train)
+    # print(np.shape(x_training), len(images))
+
+
+    x_train = np.reshape(x_training, (np.shape(x_training)[0],128*128))
+
+    y_train = np.asarray(labels)[train_index]
+
+    model.fit(x_train, y_train, nb_epoch=200)
 
 
