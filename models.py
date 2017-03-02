@@ -1,9 +1,23 @@
 from keras.models import Sequential
 
-from keras.layers import Dense, Dropout, Activation, Convolution2D, MaxPooling2D, Flatten, BatchNormalization, SpatialDropout2D, Reshape, Upsampling2D
+from keras.layers import Dense, Dropout, Activation, Convolution2D, MaxPooling2D, Flatten, BatchNormalization, SpatialDropout2D, Reshape, UpSampling2D
 from keras.optimizers import SGD
 from keras.callbacks import ModelCheckpoint
 
+
+def mlp(nb_classes):
+    model = Sequential()
+
+    model.add(Dense(1024, input_dim=(1*128*128), init='uniform'))
+    model.add(Activation('tanh'))
+    model.add(Dropout(0.5))
+    model.add(Dense(256, init='uniform'))
+    model.add(Activation('tanh'))
+    model.add(Dropout(0.5))
+    model.add(Dense(nb_classes, init='uniform'))
+    model.add(Activation('softmax'))
+
+    return model
 
 def cnn():
     nb_classes = 3

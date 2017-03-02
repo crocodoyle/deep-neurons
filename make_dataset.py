@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 
 import openslide
 
+from PIL import Image
+
 import os, sys, csv
 
 
@@ -28,23 +30,25 @@ if __name__ == "__main__":
                 numNeurons += 1
 
     print(numNeurons, 'neurons')
-    images = f.create_dataset('images', shape=(numNeurons, 128,128), dtype='float32')
-    labels = f.create_dataset('labels', shape=(numNeurons, 3,1),     dtype='bool')
+    images = f.create_dataset('images', shape=(numNeurons, 128, 128), dtype='float32')
+    labels = f.create_dataset('labels', shape=(numNeurons, 3),     dtype='bool')
 
     label_list = []
-    with open(label_file, 'r') as f:
-        reader = csv.reader(f)
-        label_tuples = list(reader)
+    csvReader = csv.reader(open(label_file, newline='\n'), delimiter=' ')
 
-    for i, filename in enumerate(filenames):
-        images[i,...] = plt.imread(filename)
+    for line in csvReader:
+        label_list.append((line[0], line[1]))
 
-        for label_tuple in label_tuples:
-            if (label_tuple[0]+ '.tif') in filename:
-                if 'pyr' in label_tuple[1]:
-                    labels[i, ...] = [1, 0, 0]
-                if 'not' in label_tuple[1]:
-                    labels[i,...] = [0, 1, 0]
-                if 'unk' in label_tuple[1]:
-                    labels[i,...] = [0, 0, 1]
+    for i, (filename, label_tuple) in enumerate(zip(filenames, label_list)):
+        images[i,...] = Image.open(filename).convert('L')
+
+        print(label_tuple)
+
+        if 'pyr' in label_tuple[1]:
+            labels[i, ...] = [True, False, False]
+        if 'not' in label_tuple[1]:
+            labels[i,...] = [False, True, False]
+        if 'unk' in label_tuple[1]:
+            labels[i,...] = [False, False, True]
+
     f.close()
