@@ -5,6 +5,7 @@ import make_dataset
 
 from sklearn.model_selection import StratifiedShuffleSplit
 
+import os
 import models
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,7 +16,8 @@ import h5py
 input_file = 'E:/deep-neurons/deep-neurons.hdf5'
 
 def load_data():
-    f = h5py.File(input_file, 'r')
+
+    f = h5py.File(os.getcwd() + '/deep-neurons.hdf5', 'w')
 
     labels = f['labels']
 
@@ -38,7 +40,6 @@ def load_data():
 
 
     return train_indices, validation_indices
-
 
 
 def train_gan():
