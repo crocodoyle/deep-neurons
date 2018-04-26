@@ -5,13 +5,14 @@ import make_dataset
 
 from sklearn.model_selection import StratifiedShuffleSplit
 
+import os
 import models
 import numpy as np
 
 import h5py
 
 def load_data():
-    f = h5py.File('E:/deep-neurons/deep-neurons.hdf5', 'r')
+    f = h5py.File(os.getcwd() + '/deep-neurons.hdf5', 'w')
 
     labels = f['labels']
 
@@ -36,7 +37,7 @@ def load_data():
     return train_indices, validation_indices
 
 if __name__ == "__main__":
-    f = h5py.File('E:/deep-neurons/deep-neurons.hdf5', 'r')
+    f = h5py.File(os.getcwd() + '/deep-neurons.hdf5', 'w')
 
     train_index, val_index = load_data()
 
@@ -61,5 +62,3 @@ if __name__ == "__main__":
     y_train = np.asarray(labels)[train_index]
 
     model.fit(x_train, y_train, nb_epoch=200)
-
-
