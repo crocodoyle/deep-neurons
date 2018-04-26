@@ -14,7 +14,7 @@ def build_parser():
     return parser
 
 def parse_args(argv):
-    print argv
+    print(argv)
     if type(argv) == list or argv is None:
         opt = build_parser().parse_args(argv)
     else:
