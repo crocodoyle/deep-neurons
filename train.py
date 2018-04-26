@@ -13,11 +13,11 @@ import matplotlib.pyplot as plt
 import h5py
 
 
-input_file = 'E:/deep-neurons/deep-neurons.hdf5'
+input_file = 'deep-neurons.hdf5'
 
 def load_data():
 
-    f = h5py.File(os.getcwd() + '/deep-neurons.hdf5', 'w')
+    f = h5py.File(os.getcwd() + '/deep-neurons.hdf5', 'r')
 
     labels = f['labels']
 
@@ -185,6 +185,5 @@ def generate():
         plt.clf()
 
 if __name__ == "__main__":
-
     train_gan()
     generate()
