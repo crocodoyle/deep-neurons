@@ -14,12 +14,20 @@ def build_parser():
     return parser
 
 def parse_args(argv):
-    print(argv)
+    print argv
     if type(argv) == list or argv is None:
         opt = build_parser().parse_args(argv)
     else:
         opt = argv
     return opt
+
+def normalise_zero_one(image):
+   """Image normalisation. Normalises image to fit [0, 1] range."""
+
+   image = image.astype(np.float32)
+   ret = (image - np.min(image))
+   ret /= (np.max(image) + 0.000001)
+   return ret
 
 def get_label(filename):
     return filename.split("/")[-1].split("_")[-1].split(".")[0]
@@ -45,7 +53,7 @@ def main(argv=None):
     labels = f.create_dataset('labels', shape=(numNeurons, 3), dtype='bool')
 
     for i, filename in enumerate(filenames):
-        images[i,...] = Image.open(filename).convert('L')
+        images[i,...] = normalise_zero_one(np.array(Image.open(filename).convert('L')))
         label = get_label(filename)
         if 'pyr' in label:
             labels[i, ...] = [True, False, False]
